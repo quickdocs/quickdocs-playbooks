@@ -1,0 +1,3 @@
+roswell_version: v0.0.2.34
+roswell_src: "https://github.com/snmsts/roswell/archive/{{ roswell_version }}.tar.gz"
+tmpdir: /tmp

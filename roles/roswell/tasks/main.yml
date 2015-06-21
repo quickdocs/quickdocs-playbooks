@@ -1,0 +1,29 @@
+- name: install dependencies
+  sudo: yes
+  apt: name={{ item }} state=present
+  with_items:
+    - autotools-dev
+    - automake
+    - libcurl4-gnutls-dev
+
+- name: download roswell
+  get_url: url={{ roswell_src }} dest={{ tmpdir }}/roswell-{{ roswell_version }}.tar.gz
+
+- name: extract roswell
+  unarchive: src={{ tmpdir }}/roswell-{{ roswell_version }}.tar.gz dest={{ tmpdir }} copy=no
+
+- name: install roswell
+  sudo: yes
+  shell: sh ./bootstrap && ./configure && make && sudo make install
+         chdir={{ tmpdir }}/roswell-{{ roswell_version }}
+         creates=/usr/local/bin/ros
+
+- file: path=~/.bashrc state=touch
+
+- name: .bashrc
+  lineinfile:
+    dest=~/.bashrc
+    line="PATH=~/.roswell/bin:$PATH"
+    regexp="^PATH=~/.roswell/bin:\$PATH$"
+    state=present
+    insertafter=EOF

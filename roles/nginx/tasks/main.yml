@@ -1,0 +1,7 @@
+- name: install nginx
+  sudo: yes
+  apt: name=nginx state=present
+
+- name: create /var/log/nginx
+  sudo: yes
+  file: path=/var/log/nginx state=directory

@@ -1,0 +1,9 @@
+- name: install essential softwares
+  sudo: yes
+  apt: name={{ item }} state=present
+  with_items:
+    - build-essential
+    - gcc
+    - curl
+    - git
+- file: path=~/.bashrc state=file

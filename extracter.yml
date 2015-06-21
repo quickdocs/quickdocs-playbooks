@@ -1,0 +1,16 @@
+- hosts: extracter
+  vars:
+    - roswell_version: master
+    - parser_version: no-ignore-errors
+  pre_tasks:
+    - user: name=git home=/srv/git
+      sudo: yes
+    - user: name=www home=/srv/www
+      sudo: yes
+    - shell: chmod 777 /srv/www
+      sudo: yes
+  roles:
+    - common
+    - roswell
+    - docker
+    - quickdocs-extracter
