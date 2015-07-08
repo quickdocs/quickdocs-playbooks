@@ -1,1 +1,2 @@
-extracter_version: master
+extracter_version: master
+deploy_path: /srv/www/quickdocs-extracter

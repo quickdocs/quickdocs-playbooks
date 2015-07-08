@@ -1,6 +1,4 @@
 - name: git clone
-  sudo: yes
-  sudo_user: git
   git:
     repo=https://github.com/quickdocs/quickdocs-parser.git
     dest=/srv/www/quickdocs-parser

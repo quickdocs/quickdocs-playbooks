@@ -2,6 +2,7 @@
   vars:
     - roswell_version: master
     - parser_version: no-ignore-errors
+    - extracter_deploy_path: /srv/www/quickdocs-extracter
   pre_tasks:
     - user: name=git home=/srv/git
       sudo: yes
@@ -13,4 +14,7 @@
     - common
     - roswell
     - docker
-    - quickdocs-extracter
+    - { role: quickdocs-extracter, deploy_path: "{{ extracter_deploy_path }}" }
+  tasks:
+    - name: docker build
+      shell: docker build -t quickdocs/quickdocs-extracter {{ extracter_deploy_path }}

@@ -1,3 +1,7 @@
 - name: install the latest docker
   sudo: yes
   shell: curl -sSL https://get.docker.com/ubuntu/ | sh
+
+- name: "add {{ ansible_ssh_user }} to docker group"
+  sudo: yes
+  shell: usermod -aG docker {{ ansible_ssh_user }}

@@ -1,9 +1,7 @@
 - name: git clone
-  sudo: yes
-  sudo_user: git
   git:
     repo=https://github.com/quickdocs/quickdocs-extracter.git
-    dest=/srv/www/quickdocs-extracter
+    dest={{ deploy_path }}
     version={{ extracter_version }}
     recursive=yes
     accept_hostkey=yes
