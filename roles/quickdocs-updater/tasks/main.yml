@@ -1,7 +1,15 @@
-- name: git clone
+- name: git clone quickdocs-updater
   git:
     repo=https://github.com/quickdocs/quickdocs-updater.git
     dest={{ deploy_path }}
     version={{ updater_version }}
+    recursive=yes
+    accept_hostkey=yes
+
+- name: git clone quickdocs-database
+  git:
+    repo=https://github.com/quickdocs/quickdocs-database.git
+    dest={{ database_deploy_path }}
+    version=master
     recursive=yes
     accept_hostkey=yes

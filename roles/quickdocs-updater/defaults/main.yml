@@ -1,2 +1,3 @@
-extracter_version: master
+updater_version: master
 deploy_path: /srv/www/quickdocs-updater
+database_deploy_path: /srv/www/quickdocs-database
