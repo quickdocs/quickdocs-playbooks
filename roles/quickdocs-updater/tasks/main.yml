@@ -1,0 +1,7 @@
+- name: git clone
+  git:
+    repo=https://github.com/quickdocs/quickdocs-updater.git
+    dest={{ deploy_path }}
+    version={{ updater_version }}
+    recursive=yes
+    accept_hostkey=yes

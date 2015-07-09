@@ -3,6 +3,7 @@
     - roswell_version: master
     - parser_version: no-ignore-errors
     - extracter_deploy_path: /srv/www/quickdocs-extracter
+    - updater_deploy_path: /srv/www/quickdocs-updater
   pre_tasks:
     - user: name=git home=/srv/git
       sudo: yes
@@ -15,6 +16,7 @@
     - roswell
     - docker
     - { role: quickdocs-extracter, deploy_path: "{{ extracter_deploy_path }}" }
+    - { role: quickdocs-updater, deploy_path: "{{ updater_deploy_path }}" }
   tasks:
     - name: docker build
       shell: scripts/build-docker-image
