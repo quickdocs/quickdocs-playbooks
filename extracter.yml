@@ -17,4 +17,5 @@
     - { role: quickdocs-extracter, deploy_path: "{{ extracter_deploy_path }}" }
   tasks:
     - name: docker build
-      shell: docker build -t quickdocs/quickdocs-extracter {{ extracter_deploy_path }}
+      shell: scripts/build-docker-image
+      chdir: {{ extracter_deploy_path }}
