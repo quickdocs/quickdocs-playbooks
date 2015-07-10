@@ -19,11 +19,13 @@
     - { role: quickdocs-extracter, deploy_path: "{{ extracter_deploy_path }}" }
     - { role: quickdocs-updater, deploy_path: "{{ updater_deploy_path }}", database_deploy_path: "{{ database_deploy_path }}" }
   tasks:
+    - name: check if docker image exists
+      shell: docker images | grep quickdocs/quickdocs-extracter
+      register: docker_image_exists
     - name: docker build
-      shell: scripts/build-docker-image
-      chdir: {{ extracter_deploy_path }}
+      shell: scripts/build-docker-image chdir="{{ extracter_deploy_path }}"
+      when: docker_image_exists == false
     - name: create db
-      shell: mysql -uroot -e "CREATE DATABASE 'quickdocs' DEFAULT CHARACTER SET utf8"
+      shell: mysql -uroot -e "CREATE DATABASE IF NOT EXISTS quickdocs DEFAULT CHARACTER SET utf8"
     - name: create tables
-      shell: mysql -uroot quickdocs < db/schema.sql
-      chdir: {{ database_deploy_path }}
+      shell: mysql -uroot quickdocs < db/schema.sql chdir="{{ database_deploy_path }}"
