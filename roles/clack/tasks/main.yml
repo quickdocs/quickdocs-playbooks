@@ -1,0 +1,9 @@
+- name: download clackup.ros
+  get_url: url=https://raw.githubusercontent.com/fukamachi/clack/master/roswell/clackup.ros
+           dest={{ tmpdir }}/clackup.ros
+
+- shell: chmod u+x {{ tmpdir }}/clackup.ros
+
+- name: /usr/local/bin/clackup
+  sudo: yes
+  shell: mv {{ tmpdir }}/clackup.ros /usr/local/bin/clackup

@@ -1,0 +1,40 @@
+server {
+    listen 80;
+    server_name quickdocs.org;
+    access_log  /var/log/nginx/quickdocs_access.log;
+    error_log   /var/log/nginx/quickdocs_error.log;
+
+    error_page 500 502 503 504 /html/50x.html;
+
+    location = /html/50x.html {
+        alias {{ server_deploy_path }}/static/html/50x.html;
+    }
+    location ~* ^/(css|images|js)/(.+)$ {
+        root {{ server_deploy_path }}/static/;
+        access_log off;
+        expires max;
+        break;
+    }
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+        alias {{ server_deploy_path }}/static/favicon.ico;
+    }
+    location = /robots.txt {
+        log_not_found off;
+        access_log off;
+        alias {{ server_deploy_path }}/static/robots.txt;
+    }
+    location ^~ /apple-touch-icon {
+        root {{ server_deploy_path }}/static;
+    }
+    location / {
+        proxy_pass http://127.0.0.1:{{ server_deploy_port }}/;
+    }
+}
+
+server {
+    listen 80;
+    server_name www.quickdocs.org;
+    rewrite ^ http://quickdocs.org$request_uri? permanent;
+}

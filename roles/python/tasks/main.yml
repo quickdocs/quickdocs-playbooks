@@ -1,0 +1,7 @@
+- name: install python 2.7
+  sudo: yes
+  apt: name=python2.7 state=present
+
+- name: install pip
+  sudo: yes
+  apt: name=python-pip state=present

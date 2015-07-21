@@ -1,0 +1,46 @@
+- include: common.yml
+- hosts: updater
+  vars:
+    - roswell_version: master
+    - extracter_deploy_path: /srv/www/quickdocs-extracter
+    - updater_deploy_path: /srv/www/quickdocs-updater
+  pre_tasks:
+    - user: name=git home=/srv/git
+      sudo: yes
+    - user: name=www home=/srv/www
+      sudo: yes
+    - shell: chmod 777 /srv/www
+      sudo: yes
+  roles:
+    - roswell
+    - { role: quickdocs-extracter, deploy_path: "{{ extracter_deploy_path }}" }
+    - { role: quickdocs-updater, deploy_path: "{{ updater_deploy_path }}" }
+  tasks:
+    - name: check if docker image exists
+      shell: docker images | grep quickdocs/quickdocs-extracter
+      register: docker_image_exists
+    - name: docker build
+      shell: scripts/build-docker-image chdir="{{ extracter_deploy_path }}"
+      when: docker_image_exists == false
+
+    - name: source-registry configuration directory
+      file: path=~/.config/common-lisp/source-registry.conf.d/ state=directory
+    - name: source-registry configuration file
+      file: path=~/.config/common-lisp/source-registry.conf.d/local.conf state=touch
+    - name: add updater to central registry
+      lineinfile:
+        dest=~/.config/common-lisp/source-registry.conf.d/local.conf
+        regexp="{{ updater_deploy_path }}"
+        line="(:directory \"{{ updater_deploy_path }}\")"
+        state=present
+        insertafter=EOF
+    - name: add extracter to central registry
+      lineinfile:
+        dest=~/.config/common-lisp/source-registry.conf.d/local.conf
+        regexp="{{ extracter_deploy_path }}"
+        line="(:directory \"{{ extracter_deploy_path }}\")"
+        state=present
+        insertafter=EOF
+
+    - shell: qlot install
+             chdir="{{ updater_deploy_path }}"

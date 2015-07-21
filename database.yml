@@ -1,0 +1,12 @@
+- include: common.yml
+- hosts: database
+  vars:
+    - database_deploy_path: /srv/www/quickdocs-database
+  roles:
+    - mysql
+    - { role: quickdocs-database, deploy_path: "{{ database_deploy_path }}" }
+  tasks:
+    - name: create db
+      shell: mysql -uroot -e "CREATE DATABASE IF NOT EXISTS quickdocs DEFAULT CHARACTER SET utf8"
+    - name: create tables
+      shell: mysql -uroot quickdocs < db/schema.sql chdir="{{ database_deploy_path }}"

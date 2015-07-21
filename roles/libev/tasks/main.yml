@@ -1,0 +1,3 @@
+- name: install libev
+  sudo: yes
+  apt: name=libev-dev state=present

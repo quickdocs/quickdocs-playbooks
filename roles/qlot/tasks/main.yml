@@ -1,0 +1,6 @@
+- name: install qlot
+  shell: ros install qlot
+- name: /usr/local/bin/qlot
+  sudo: yes
+  sudo_user:
+  shell: mv "{{ ansible_home }}/.roswell/bin/qlot" /usr/local/bin/qlot

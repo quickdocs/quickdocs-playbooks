@@ -1,0 +1,7 @@
+- name: install cpanm
+  sudo: yes
+  shell: curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+
+- name: install Server::Starter
+  sudo: yes
+  shell: cpanm install --sudo -f Server::Starter

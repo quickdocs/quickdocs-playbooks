@@ -1,0 +1,10 @@
+[program:quickdocs]
+command=start_server --port {{ server_deploy_port }} -- qlot exec clackup app.lisp --debug nil --server :woo
+directory={{ server_deploy_path }}
+numprocs=1
+autostart=true
+autorestart=true
+user={{ ansible_ssh_user }}
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/quickdocs.log
+environment=APP_ENV="production"

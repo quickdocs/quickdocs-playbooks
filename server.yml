@@ -1,0 +1,70 @@
+- include: common.yml
+- hosts: server
+  vars:
+    - roswell_version: master
+    - server_deploy_path: /srv/www/quickdocs-server
+    - server_deploy_port: 38080
+  pre_tasks:
+    - user: name=git home=/srv/git
+      sudo: yes
+    - user: name=www home=/srv/www
+      sudo: yes
+    - shell: chmod 777 /srv/www
+      sudo: yes
+  roles:
+    - libev
+    - roswell
+    - supervisor
+    - server_starter
+    - nginx
+    - clack
+    - qlot
+    - { role: quickdocs-server, deploy_path: "{{ server_deploy_path }}" }
+  tasks:
+    - name: create log directory
+      file: path=/var/log/apps mode=777 state=directory
+
+    - name: .sbclrc
+      template: src=templates/sbclrc.j2 dest=~/.sbclrc
+
+    - name: source-registry configuration directory
+      file: path=~/.config/common-lisp/source-registry.conf.d/ state=directory
+    - name: source-registry configuration file
+      file: path=~/.config/common-lisp/source-registry.conf.d/local.conf state=touch
+    - name: add to central registry
+      lineinfile:
+        dest=~/.config/common-lisp/source-registry.conf.d/local.conf
+        regexp="{{ server_deploy_path }}"
+        line="(:directory \"{{ server_deploy_path }}\")"
+        state=present
+        insertafter=EOF
+
+    - shell: qlot install
+             chdir="{{ server_deploy_path }}"
+
+    - name: nginx.conf
+      sudo: yes
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/quickdocs
+    - name: enable nginx.conf
+      sudo: yes
+      file: src=/etc/nginx/sites-available/quickdocs dest=/etc/nginx/sites-enabled/quickdocs state=link
+    - name: restart nginx
+      sudo: yes
+      service: name=nginx state=restarted
+
+    - stat: path=/etc/supervisor.d/quickdocs.ini
+      register: supervisor_conf
+    - name: supervisor configuration file
+      sudo: yes
+      template: src=templates/supervisor.conf.j2 dest=/etc/supervisor.d/quickdocs.ini
+      when: not supervisor_conf.stat.exists
+    - name: reread supervisord
+      sudo: yes
+      shell: supervisorctl reread
+    - name: add to supervisor process group
+      sudo: yes
+      shell: supervisorctl add quickdocs
+      when: not supervisor_conf.stat.exists
+    - name: restart supervisor
+      sudo: yes
+      shell: supervisorctl update quickdocs

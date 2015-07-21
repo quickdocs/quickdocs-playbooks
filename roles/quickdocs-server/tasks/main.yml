@@ -1,0 +1,7 @@
+- name: git clone quickdocs-server
+  git:
+    repo=https://github.com/quickdocs/quickdocs-server.git
+    dest={{ deploy_path }}
+    version=master
+    recursive=yes
+    accept_hostkey=yes

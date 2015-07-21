@@ -1,0 +1,6 @@
+- name: install mysql-server
+  sudo: yes
+  apt: name=mysql-server-5.5 state=present
+- name: install libmysqlclient
+  sudo: yes
+  apt: name=libmysqlclient-dev state=present

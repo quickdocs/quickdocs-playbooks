@@ -1,0 +1,23 @@
+- name: install supervisor
+  sudo: yes
+  shell: pip install supervisor creates=/usr/bin/supervisord
+
+- name: generate /etc/supervisord.conf
+  sudo: yes
+  template: src=../templates/supervisord.conf.j2 dest=/etc/supervisord.conf
+
+- name: create /etc/supervisor.d/
+  sudo: yes
+  file: path=/etc/supervisor.d/ state=directory
+
+- name: create /var/log/supervisor/
+  sudo: yes
+  file: path=/var/log/supervisor/ state=directory
+
+- name: upstart supervisord
+  sudo: yes
+  template: src=../templates/upstart-supervisor.conf.j2 dest=/etc/init/supervisord.conf
+
+- name: start supervisord
+  sudo: yes
+  shell: initctl start supervisord
