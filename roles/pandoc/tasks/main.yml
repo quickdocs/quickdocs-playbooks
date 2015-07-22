@@ -1,3 +1,15 @@
+- name: check if pandoc is already installed
+  command: dpkg-query -W pandoc
+  register: is_pandoc_installed
+  failed_when: is_pandoc_installed.rc > 1
+  changed_when: is_pandoc_installed.rc == 1
+
+- name: download pandoc from GitHub
+  get_url: url=https://github.com/jgm/pandoc/releases/download/1.15.0.6/pandoc-1.15.0.6-1-amd64.deb
+           dest={{ tmpdir }}/pandoc-1.15.0.6-1-amd64.deb
+  when: is_pandoc_installed.rc == 1
+
 - name: install pandoc
   sudo: yes
-  apt: name=pandoc state=present
+  shell: dpkg -i {{ tmpdir }}/pandoc-1.15.0.6-1-amd64.deb
+  when: is_pandoc_installed.rc == 1
