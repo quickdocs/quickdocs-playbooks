@@ -33,7 +33,7 @@ server {
         root {{ server_deploy_path }}/static;
     }
     location / {
-        proxy_pass http://127.0.0.1:{{ server_deploy_port }}/;
+        proxy_pass http://127.0.0.1:{{ server_deploy_port }};
     }
 }
 
