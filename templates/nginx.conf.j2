@@ -4,8 +4,12 @@ server {
     access_log  /var/log/nginx/quickdocs_access.log;
     error_log   /var/log/nginx/quickdocs_error.log;
 
-    error_page 500 502 503 504 /html/50x.html;
+    error_page 500 /html/500.html;
+    error_page 502 503 504 /html/50x.html;
 
+    location = /html/500.html {
+        alias {{ server_deploy_path }}/static/html/500.html;
+    }
     location = /html/50x.html {
         alias {{ server_deploy_path }}/static/html/50x.html;
     }
